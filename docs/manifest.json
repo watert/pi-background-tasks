@@ -50,11 +50,12 @@
       "state": "stale-authored-prose"
     },
     {
-      "authored_body_sha256": "sha256:98480d246e890ee3dc1ed98cdb007cbbe016cdba896d700221a06132253393f2",
+      "authored_body_sha256": "sha256:3f84705414b465bf45fd9c2a7ecda05dc3997e2461623d100b9e6c019ad664e6",
       "covers_sources": [
         "src/core/common.ts",
         "src/core/registry.ts",
         "src/core/reload-shell-owner.ts",
+        "src/core/runtime-root.ts",
         "src/core/shell-policy.ts",
         "src/core/windows-taskkill.ts"
       ],
@@ -481,6 +482,7 @@
         "src/core/common.ts",
         "src/core/registry.ts",
         "src/core/reload-shell-owner.ts",
+        "src/core/runtime-root.ts",
         "src/core/shell-policy.ts",
         "src/core/windows-taskkill.ts"
       ],
@@ -1303,7 +1305,7 @@
       {
         "availability": "always",
         "default_available": true,
-        "description": "Start a named long-running shell command in the background and return immediately with a task ID and output path. By default, completed, failed, or killed terminal state is delivered automatically as <background-task-notification> and starts a follow-up agent turn; do not sleep or poll merely to wait. Output is written to .pi/tasks and model-visible logs are bounded to 50.0KB.",
+        "description": "Start a named long-running shell command in the background and return immediately with a task ID and output path. By default, completed, failed, or killed terminal state is delivered automatically as <background-task-notification> and starts a follow-up agent turn; do not sleep or poll merely to wait. Output is written under the Pi home runtime root (PI_BG_RUNTIME_DIR, default ~/.pi/bg-tasks) and model-visible logs are bounded to 50.0KB.",
         "id": "tool:bg_run",
         "kind": "tool",
         "label": "Background Run",
@@ -1961,6 +1963,9 @@
       "subsystems/background-task-runtime"
     ],
     "src/core/reload-shell-owner.ts": [
+      "subsystems/background-task-runtime"
+    ],
+    "src/core/runtime-root.ts": [
       "subsystems/background-task-runtime"
     ],
     "src/core/shell-policy.ts": [

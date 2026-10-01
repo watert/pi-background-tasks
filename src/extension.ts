@@ -927,7 +927,7 @@ export default async function backgroundTasksExtension(pi: ExtensionAPI): Promis
   pi.registerTool<typeof BgRunParams, BgRunDetails>({
     name: 'bg_run',
     label: 'Background Run',
-    description: `Start a named long-running shell command in the background and return immediately with a task ID and output path. By default, completed, failed, or killed terminal state is delivered automatically as <background-task-notification> and starts a follow-up agent turn; do not sleep or poll merely to wait. Output is written to .pi/tasks and model-visible logs are bounded to ${formatSize(MAX_LOG_BYTES)}.`,
+    description: `Start a named long-running shell command in the background and return immediately with a task ID and output path. By default, completed, failed, or killed terminal state is delivered automatically as <background-task-notification> and starts a follow-up agent turn; do not sleep or poll merely to wait. Output is written under the Pi home runtime root (PI_BG_RUNTIME_DIR, default ~/.pi/bg-tasks) and model-visible logs are bounded to ${formatSize(MAX_LOG_BYTES)}.`,
     promptSnippet:
       'Start a named long-running shell command; default terminal notification wakes a follow-up turn, so yield instead of polling',
     promptGuidelines: [

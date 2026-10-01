@@ -165,6 +165,8 @@ void describe('fusion v5 core workflow contracts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         profile: FUSION_RESEARCH_WORKFLOW,
         source: 'tool',
         config,

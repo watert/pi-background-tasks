@@ -5,17 +5,32 @@ mode: authored
 review_policy: behavioral
 stability: stable
 covers_surfaces: []
-covers_sources: [src/core/common.ts, src/core/registry.ts, src/core/reload-shell-owner.ts, src/core/shell-policy.ts, src/core/windows-taskkill.ts]
+covers_sources: [src/core/common.ts, src/core/registry.ts, src/core/reload-shell-owner.ts, src/core/runtime-root.ts, src/core/shell-policy.ts, src/core/windows-taskkill.ts]
 ---
 # Background task runtime
 
 The runtime owns task identity, shell invocation, process lifecycle, bounded logs, metadata, telemetry ingestion, completion publication, and platform termination.
 
+## Runtime root
+
+All runtime state lives under a single root resolved once per process:
+
+- `PI_BG_RUNTIME_DIR` when set; it must be absolute, because a parent and its delegate children are not guaranteed to share a working directory and a relative root would let one run disagree with itself about where artifacts live.
+- Otherwise `~/.pi/bg-tasks`.
+
+The root is deliberately outside the project working copy. Upstream wrote every runtime path under `<cwd>/.pi`, which kept state inside repositories and iCloud-synced vaults and made it invisible to any collector that walks only the Pi session tree. Under this root:
+
+- `<root>/tasks/<session-id>-<pid>/` for background shell tasks
+- `<root>/delegate/<session-id>-<pid>/<task-id>/` for delegate artifacts and the child session
+- `<root>/fusion/<session-id>-<pid>/<run-id>/` for fusion run artifacts
+
+Tool output renders these paths with the home prefix collapsed to `~`; the absolute path is what the child receives through `PI_BG_DELEGATE_ARTIFACT_DIR`, so both halves of a run always agree.
+
 ## Core contracts
 
 - Task statuses are exactly `running`, `completed`, `failed`, and `killed`.
 - Terminal statuses are exactly `completed`, `failed`, and `killed`.
-- Runtime directory: `.pi/tasks/<session-id>-<pid>/` under the project cwd.
+- Runtime directory: `<runtime-root>/tasks/<session-id>-<pid>/`.
 - Per task: `<task-id>.output` and `<task-id>.json`; some agent modes may add wrapper or attestation files. Ordinary shell-task snapshots and metadata include the non-secret activation shell facts (`policy`, `executable`, `argvPrefix`, and `dialect`) used for that launch. New records also emit `surviveReload`; missing legacy fields mean false. Opted records carry `reloadSurvival` audit facts, but those bytes never grant process authority or permit adoption.
 - In-memory recent retention prunes oldest finished tasks over the limit while preserving running tasks and newest-result recency. If the oldest finished task still owns pending publication, pruning first abandons and disposes that publication as `retention_limit`; pending gates cannot force eviction of a newer result or grow retained finished tasks without bound.
 - `resolveTask` accepts exact ids or unambiguous prefixes and fails loudly for empty, unknown, or ambiguous ids.

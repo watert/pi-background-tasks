@@ -104,6 +104,8 @@ async function createVerifiedFailureStore(
 ): Promise<{ store: FusionArtifactStore; summary: ReturnType<typeof buildFusionFailureSummary> }> {
   const store = await FusionArtifactStore.create({
     cwd: root,
+    // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+    runtimeRoot: root,
     runId: `reason-${terminalState === 'failed' ? '4' : '5'}`.padEnd(39, terminalState === 'failed' ? '4' : '5'),
     source: 'tool',
     config: defaultFusionModelConfig(),
@@ -207,6 +209,8 @@ void describe('fusion artifacts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         sessionId: 'session/id',
         runId: 'reason-00000000000000000000000000000000',
         source: 'command',
@@ -217,7 +221,9 @@ void describe('fusion artifacts', () => {
       });
       // Normalize separators: the artifact dir uses native path separators, so
       // it is backslash-delimited on Windows.
-      assert.match(store.artifactDir.replaceAll('\\', '/'), /^\.pi\/fusion\/session-id-/);
+      // 本 fork：display 是 runtime root 下的绝对路径，不再是 cwd 相对路径
+      assert.equal(store.artifactDir, store.artifactDirAbs);
+      assert.match(store.artifactDir.replaceAll('\\', '/'), /\/fusion\/session-id-/);
       const dirMode = (await stat(store.artifactDirAbs)).mode & 0o777;
       // Windows has no POSIX permission bits; NTFS ACLs are not modelled here.
       if (process.platform !== 'win32') assert.equal(dirMode, 0o700);
@@ -280,6 +286,8 @@ void describe('fusion artifacts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         runId: 'reason-00000000000000000000000000000002',
         source: 'command',
         config: defaultFusionModelConfig(),
@@ -341,6 +349,8 @@ void describe('fusion artifacts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         runId: 'reason-00000000000000000000000000000001',
         source: 'command',
         config: defaultFusionModelConfig(),
@@ -418,6 +428,8 @@ void describe('fusion artifacts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         runId: 'reason-11111111111111111111111111111111',
         source: 'tool',
         config: defaultFusionModelConfig(),
@@ -498,6 +510,8 @@ void describe('fusion artifacts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         runId: 'reason-33333333333333333333333333333333',
         source: 'tool',
         config: defaultFusionModelConfig(),
@@ -577,6 +591,8 @@ void describe('fusion artifacts', () => {
     try {
       const unstarted = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         runId: 'reason-66666666666666666666666666666666',
         source: 'tool',
         config: defaultFusionModelConfig(),
@@ -873,6 +889,8 @@ void describe('fusion artifacts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         runId: 'reason-88888888888888888888888888888888',
         source: 'tool',
         config: defaultFusionModelConfig(),
@@ -961,6 +979,8 @@ void describe('fusion artifacts', () => {
     try {
       const store = await FusionArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         runId: 'reason-22222222222222222222222222222222',
         source: 'command',
         config: defaultFusionModelConfig(),

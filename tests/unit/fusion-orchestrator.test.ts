@@ -363,7 +363,7 @@ async function failedManifest(root: string, runner: FusionChildRunner): Promise<
   assert.ok(thrown instanceof FusionError);
   assert.ok(thrown.artifactDir, 'failed fusion error must include artifact dir');
   const manifest = parseObject(
-    await readFile(join(root, thrown.artifactDir, 'manifest.json'), 'utf8'),
+    await readFile(join(thrown.artifactDir, 'manifest.json'), 'utf8'),
   );
   assert.equal(field(manifest, 'state'), 'failed');
   const artifacts = objectField(manifest, 'artifacts');
@@ -455,7 +455,7 @@ void describe('fusion orchestrator', () => {
         .map((call) => call.userPrompt);
       assert.equal(candidatePrompts[0], candidatePrompts[1]);
       assert.equal(candidatePrompts[1], candidatePrompts[2]);
-      const manifestPath = join(root, result.details.artifact_dir, 'manifest.json');
+      const manifestPath = join(result.details.artifact_dir, 'manifest.json');
       const manifest = parseObject(await readFile(manifestPath, 'utf8'));
       assert.equal(field(manifest, 'state'), 'completed');
       const completedArtifacts = objectField(manifest, 'artifacts');
@@ -469,7 +469,7 @@ void describe('fusion orchestrator', () => {
       assert.equal(field(map, 'B'), 3);
       assert.equal(field(map, 'C'), 1);
       assert.equal(
-        await readFile(join(root, result.details.artifact_dir, 'merged.md'), 'utf8'),
+        await readFile(join(result.details.artifact_dir, 'merged.md'), 'utf8'),
         'merged final',
       );
     } finally {
@@ -647,7 +647,7 @@ void describe('fusion orchestrator', () => {
       assert.equal(thrown.code, 'child_cancelled');
       assert.ok(thrown.artifactDir);
       const manifest = parseObject(
-        await readFile(join(root, thrown.artifactDir, 'manifest.json'), 'utf8'),
+        await readFile(join(thrown.artifactDir, 'manifest.json'), 'utf8'),
       );
       assert.equal(field(manifest, 'state'), 'cancelled');
       assert.ok(field(objectField(manifest, 'artifacts'), 'failure-summary.json'));
@@ -868,7 +868,7 @@ void describe('fusion orchestrator', () => {
       const artifactDir = thrown.artifactDir;
       assert.ok(artifactDir);
       const manifest = parseObject(
-        await readFile(join(root, artifactDir, 'manifest.json'), 'utf8'),
+        await readFile(join(artifactDir, 'manifest.json'), 'utf8'),
       );
       assert.equal(field(manifest, 'state'), 'failed');
       const usageRecord = field(manifest, 'usage');
@@ -1018,7 +1018,7 @@ void describe('fusion orchestrator', () => {
         );
         assert.ok(thrown.artifactDir);
         const manifest = parseObject(
-          await readFile(join(root, thrown.artifactDir, 'manifest.json'), 'utf8'),
+          await readFile(join(thrown.artifactDir, 'manifest.json'), 'utf8'),
         );
         assertManifestUsageEqualsAttemptSum(manifest);
         assert.equal(
@@ -1080,7 +1080,7 @@ void describe('fusion orchestrator', () => {
       assert.equal(summaryWrites, 1);
       assert.ok(thrown.artifactDir);
       const manifest = parseObject(
-        await readFile(join(root, thrown.artifactDir, 'manifest.json'), 'utf8'),
+        await readFile(join(thrown.artifactDir, 'manifest.json'), 'utf8'),
       );
       assert.equal(field(manifest, 'state'), 'failed');
       assert.equal(field(objectField(manifest, 'artifacts'), 'failure-summary.json'), undefined);

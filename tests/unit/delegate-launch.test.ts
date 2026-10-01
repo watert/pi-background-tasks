@@ -4,6 +4,8 @@ import { existsSync } from 'node:fs';
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { resolveRuntimeRoot } from '../../src/core/runtime-root.js';
+import { isolateRuntimeRoot, type IsolatedRuntimeRoot } from '../helpers/runtime-root.js';
 import {
   DELEGATE_FORBIDDEN_TOOLS,
   DELEGATE_INSPECT_TOOLS,
@@ -55,8 +57,13 @@ const AVAILABLE = [
   { provider: 'tiny', id: 'no-window', contextWindow: undefined },
 ];
 
+const runtimeRootIsolations: IsolatedRuntimeRoot[] = [];
+
 afterEach(async () => {
   for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true });
+  // 本 fork：产物落在 runtime root，测试必须隔离，绝不写进真实 ~/.pi
+  const isolation = runtimeRootIsolations.pop();
+  if (isolation) await isolation.restore();
 });
 
 void describe('delegate route pinning', () => {
@@ -522,6 +529,7 @@ void describe('delegate launch preparation creates nothing on refusal', () => {
   async function attempt(overrides: Record<string, unknown>) {
     const root = await mkdtemp(join(tmpdir(), 'pi-bg-delegate-launch-'));
     roots.push(root);
+    runtimeRootIsolations.push(await isolateRuntimeRoot('pi-bg-delegate-runtime-'));
     const input = {
       ctx: {
         cwd: root,
@@ -551,8 +559,9 @@ void describe('delegate launch preparation creates nothing on refusal', () => {
     return { root, input };
   }
 
-  async function delegateDirEntries(root: string): Promise<string[]> {
-    const base = join(root, '.pi', 'delegate');
+  async function delegateDirEntries(_root: string): Promise<string[]> {
+    // 本 fork：delegate 产物在 runtime root 下，不再是 <cwd>/.pi/delegate
+    const base = join(resolveRuntimeRoot(), 'delegate');
     if (!existsSync(base)) return [];
     const sessions = await readdir(base);
     const entries: string[] = [];
@@ -670,7 +679,9 @@ void describe('delegate launch preparation creates nothing on refusal', () => {
     assert.equal(existsSync(prepared.store.artifactDirAbs), true);
     await Promise.all([prepared.rollback(), prepared.rollback()]);
     assert.equal(existsSync(prepared.store.artifactDirAbs), false);
-    assert.equal(existsSync(join(root, '.pi', 'delegate')), false);
+    // 本 fork：回滚后 runtime root 下不应残留 delegate 目录
+    assert.equal(existsSync(join(resolveRuntimeRoot(), 'delegate')), false);
+    void root;
   });
 
   void it('leaves no half-formed run when a post-directory step fails', async () => {

@@ -154,7 +154,7 @@ void describe('fusion validate orchestration', () => {
       assert.equal(result.details.context.kind, 'clean_task');
       assert.equal(
         await readFile(
-          join(root, result.details.artifact_dir, 'candidate-1.attempt-1.response.oversized.txt'),
+          join(result.details.artifact_dir, 'candidate-1.attempt-1.response.oversized.txt'),
           'utf8',
         ),
         oversizedOriginal,
@@ -177,7 +177,7 @@ void describe('fusion validate orchestration', () => {
       }});
       const result = await orchestrator.run({ source: 'tool', cwd: root, canonicalInput: built.input, canonicalInputSerialized: built.serialized, config: defaultFusionModelConfig(), models: models(), profile: FUSION_VALIDATE_WORKFLOW });
       assert.match(result.mergedText, /required audited removal of a Markdown JSON wrapper/);
-      const artifactDir = join(root, result.details.artifact_dir);
+      const artifactDir = join(result.details.artifact_dir);
       const names = await readdir(artifactDir);
       const normalizationArtifacts = names.filter((name) => name.includes('output-contract-normalized'));
       assert.equal(normalizationArtifacts.length, 2);
@@ -204,7 +204,7 @@ void describe('fusion validate orchestration', () => {
       }});
       const result = await orchestrator.run({ source: 'tool', cwd: root, canonicalInput: built.input, canonicalInputSerialized: built.serialized, config: defaultFusionModelConfig(), models: models(), profile: FUSION_VALIDATE_WORKFLOW });
       assert.match(result.mergedText, /could not be parsed after strict contract checks/);
-      const names = await readdir(join(root, result.details.artifact_dir));
+      const names = await readdir(join(result.details.artifact_dir));
       assert.equal(names.filter((name) => name.includes('output-contract-dropped')).length, 1);
     });
   });
@@ -225,7 +225,7 @@ void describe('fusion validate orchestration', () => {
       assert.ok(failure);
       assert.match(failure.message, /2 of 3 candidate reports/);
       assert.ok(failure.artifactDir);
-      const manifest = JSON.parse(await readFile(join(root, failure.artifactDir, 'manifest.json'), 'utf8')) as { anonymous_map?: unknown };
+      const manifest = JSON.parse(await readFile(join(failure.artifactDir, 'manifest.json'), 'utf8')) as { anonymous_map?: unknown };
       assert.ok(manifest.anonymous_map);
     });
   });

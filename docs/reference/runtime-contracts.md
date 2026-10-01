@@ -72,14 +72,15 @@ This generated registry lists production environment-variable references, runtim
 | `PI_BG_DELEGATE_SEED_PATH` | read, write | `src/core/delegate/launch.ts:354`<br>`src/delegate-child-extension.ts:385` |
 | `PI_BG_DELEGATE_SEED_SHA256` | read, write | `src/core/delegate/launch.ts:355`<br>`src/delegate-child-extension.ts:386` |
 | `PI_BG_DELEGATE_TASK_ID` | read, write | `src/core/delegate/launch.ts:356`<br>`src/delegate-child-extension.ts:387` |
-| `PI_BG_DISABLE_PI_TELEMETRY` | read | `src/core/registry.ts:271` |
+| `PI_BG_DISABLE_PI_TELEMETRY` | read | `src/core/registry.ts:272` |
 | `PI_BG_DISABLE_UPDATE_CHECK` | read | `src/extension.ts:656` |
 | `PI_BG_DOCK_SHORTCUT` | read | `src/core/config.ts:113` |
 | `PI_BG_FEATURES` | read | `src/core/config.ts:112` |
-| `PI_BG_MAX_OUTPUT_BYTES` | read | `src/core/registry.ts:78` |
+| `PI_BG_MAX_OUTPUT_BYTES` | read | `src/core/registry.ts:79` |
 | `PI_BG_POSIX_SHELL` | read | `src/core/common.ts:1085` |
 | `PI_BG_POSIX_SHELL_PATH` | read | `src/core/common.ts:1095` |
 | `PI_BG_REGISTRY_URL` | read | `src/extension.ts:665` |
+| `PI_BG_RUNTIME_DIR` | read | `src/core/runtime-root.ts:52` |
 | `PI_BG_SHELL` | read | `src/core/common.ts:1042` |
 | `PI_BG_SHELL_PATH` | read | `src/core/common.ts:1043` |
 | `PI_CACHE_RETENTION` | read, write | `src/core/anthropic-attribution.ts:819`<br>`src/core/anthropic-attribution.ts:830`<br>`src/core/fusion/claude-cache.ts:57`<br>`src/core/fusion/pi-child.ts:273`<br>`src/core/fusion/pi-child.ts:274` |
@@ -105,40 +106,40 @@ This generated registry lists production environment-variable references, runtim
 | Kind | Path/artifact | Provenance |
 | --- | --- | --- |
 | config | `fusion-models.json` | `src/core/fusion/config.ts:22` |
-| delegate-artifact | `budget-plan.json` | `src/core/delegate/artifacts.ts:44` |
-| delegate-artifact | `child-prompt.txt` | `src/core/delegate/artifacts.ts:48` |
-| delegate-artifact | `context-omission-ledger.json` | `src/core/delegate/artifacts.ts:43` |
-| delegate-artifact | `error.json` | `src/core/delegate/artifacts.ts:50` |
-| delegate-artifact | `manifest.json` | `src/core/delegate/artifacts.ts:45` |
-| delegate-artifact | `outcome.json` | `src/core/delegate/artifacts.ts:46` |
+| delegate-artifact | `budget-plan.json` | `src/core/delegate/artifacts.ts:45` |
+| delegate-artifact | `child-prompt.txt` | `src/core/delegate/artifacts.ts:49` |
+| delegate-artifact | `context-omission-ledger.json` | `src/core/delegate/artifacts.ts:44` |
+| delegate-artifact | `error.json` | `src/core/delegate/artifacts.ts:51` |
+| delegate-artifact | `manifest.json` | `src/core/delegate/artifacts.ts:46` |
+| delegate-artifact | `outcome.json` | `src/core/delegate/artifacts.ts:47` |
 | delegate-artifact | `result.json` | `src/core/delegate/result-package.ts:28` |
-| delegate-artifact | `seed.json` | `src/core/delegate/artifacts.ts:42` |
-| delegate-artifact | `spill/<receipt-named-file>` | `src/core/delegate/artifacts.ts:54` |
-| directory | `.pi/delegate/<session-id>-<pid>/<task-id>/` | `src/core/delegate/artifacts.ts:161` |
-| directory | `.pi/fusion/<session-id>-<pid>/<run-id>/` | `src/core/fusion/artifacts.ts:568` |
-| directory | `.pi/tasks/<session-id>-<pid>/` | `src/core/registry.ts:1266` |
-| fusion-artifact | `<attempt-prefix> = candidate-<slot>.attempt-<n> \| evaluation.attempt-<n> \| merge.attempt-<n>` | `src/core/fusion/artifacts.ts:248` |
-| fusion-artifact | `<attempt-prefix>.calibration-violation.json` | `src/core/fusion/artifacts.ts:263` |
-| fusion-artifact | `<attempt-prefix>.events.jsonl` | `src/core/fusion/artifacts.ts:805` |
-| fusion-artifact | `<attempt-prefix>.prompt.txt` | `src/core/fusion/artifacts.ts:804` |
-| fusion-artifact | `<attempt-prefix>.stderr.txt` | `src/core/fusion/artifacts.ts:806` |
-| fusion-artifact | `blind-candidates.json` | `src/core/fusion/artifacts.ts:713` |
-| fusion-artifact | `budget-plan.json` | `src/core/fusion/artifacts.ts:709` |
-| fusion-artifact | `candidate-<slot>.attempt-<n>.response.md \| candidate-<slot>.attempt-<n>.response.partial.md` | `src/core/fusion/artifacts.ts:258` |
-| fusion-artifact | `candidate-<slot>.attempt-<n>.tool-calls.jsonl` | `src/core/fusion/artifacts.ts:628` |
+| delegate-artifact | `seed.json` | `src/core/delegate/artifacts.ts:43` |
+| delegate-artifact | `spill/<receipt-named-file>` | `src/core/delegate/artifacts.ts:55` |
+| directory | `.pi/delegate/<session-id>-<pid>/<task-id>/` | `src/core/delegate/artifacts.ts:1` |
+| directory | `.pi/fusion/<session-id>-<pid>/<run-id>/` | `src/core/fusion/artifacts.ts:1` |
+| directory | `.pi/tasks/<session-id>-<pid>/` | `src/core/registry.ts:1` |
+| fusion-artifact | `<attempt-prefix> = candidate-<slot>.attempt-<n> \| evaluation.attempt-<n> \| merge.attempt-<n>` | `src/core/fusion/artifacts.ts:251` |
+| fusion-artifact | `<attempt-prefix>.calibration-violation.json` | `src/core/fusion/artifacts.ts:266` |
+| fusion-artifact | `<attempt-prefix>.events.jsonl` | `src/core/fusion/artifacts.ts:810` |
+| fusion-artifact | `<attempt-prefix>.prompt.txt` | `src/core/fusion/artifacts.ts:809` |
+| fusion-artifact | `<attempt-prefix>.stderr.txt` | `src/core/fusion/artifacts.ts:811` |
+| fusion-artifact | `blind-candidates.json` | `src/core/fusion/artifacts.ts:718` |
+| fusion-artifact | `budget-plan.json` | `src/core/fusion/artifacts.ts:714` |
+| fusion-artifact | `candidate-<slot>.attempt-<n>.response.md \| candidate-<slot>.attempt-<n>.response.partial.md` | `src/core/fusion/artifacts.ts:261` |
+| fusion-artifact | `candidate-<slot>.attempt-<n>.tool-calls.jsonl` | `src/core/fusion/artifacts.ts:633` |
 | fusion-artifact | `candidate-<slot>.attempt-<n>.tool-calls.jsonl.seal.json` | `src/core/fusion/child-protocol.ts:22` |
-| fusion-artifact | `canonical-input.json` | `src/core/fusion/artifacts.ts:679` |
-| fusion-artifact | `context-omission-ledger.json` | `src/core/fusion/artifacts.ts:688` |
-| fusion-artifact | `error.json` | `src/core/fusion/artifacts.ts:738` |
-| fusion-artifact | `evaluation.attempt-<n>.response.txt \| evaluation.attempt-<n>.response.partial.txt` | `src/core/fusion/artifacts.ts:258` |
-| fusion-artifact | `evaluation.json` | `src/core/fusion/artifacts.ts:383` |
-| fusion-artifact | `merge.attempt-<n>.response.md \| merge.attempt-<n>.response.partial.md` | `src/core/fusion/artifacts.ts:258` |
-| fusion-artifact | `merged.md` | `src/core/fusion/artifacts.ts:387` |
-| fusion-artifact | `result.json` | `src/core/fusion/artifacts.ts:652` |
-| fusion-artifact | `source-policy.private.json` | `src/core/fusion/artifacts.ts:695` |
+| fusion-artifact | `canonical-input.json` | `src/core/fusion/artifacts.ts:684` |
+| fusion-artifact | `context-omission-ledger.json` | `src/core/fusion/artifacts.ts:693` |
+| fusion-artifact | `error.json` | `src/core/fusion/artifacts.ts:743` |
+| fusion-artifact | `evaluation.attempt-<n>.response.txt \| evaluation.attempt-<n>.response.partial.txt` | `src/core/fusion/artifacts.ts:261` |
+| fusion-artifact | `evaluation.json` | `src/core/fusion/artifacts.ts:386` |
+| fusion-artifact | `merge.attempt-<n>.response.md \| merge.attempt-<n>.response.partial.md` | `src/core/fusion/artifacts.ts:261` |
+| fusion-artifact | `merged.md` | `src/core/fusion/artifacts.ts:390` |
+| fusion-artifact | `result.json` | `src/core/fusion/artifacts.ts:657` |
+| fusion-artifact | `source-policy.private.json` | `src/core/fusion/artifacts.ts:700` |
 | task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.attestation.json` | `src/core/attested-pi-run.ts:979` |
-| task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.json` | `src/core/registry.ts:1456` |
-| task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.output` | `src/core/registry.ts:1455` |
+| task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.json` | `src/core/registry.ts:1458` |
+| task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.output` | `src/core/registry.ts:1457` |
 | task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.pi-events.jsonl` | `src/core/attested-pi-run.ts:976` |
 | task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.pi-telemetry-wrapper.cjs` | `src/core/attested-pi-run.ts:978` |
 | task-file | `.pi/tasks/<session-id>-<pid>/<task-id>.stderr` | `src/core/attested-pi-run.ts:977` |

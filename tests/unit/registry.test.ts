@@ -8,6 +8,7 @@ import { basename, delimiter, dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import type { ExtensionAPI } from '@earendil-works/pi-coding-agent';
 import { parseJsonText, shellQuote, type StartDelegateTaskOptions } from '../../src/core/common.js';
+import { RUNTIME_DIR_ENV } from '../../src/core/runtime-root.js';
 import {
   BackgroundTaskRegistry,
   WIN32_CMD_PI_TELEMETRY_UNAVAILABLE_REASON,
@@ -136,6 +137,9 @@ async function createHarness(options: HarnessOptions = {}) {
   const root = await mkdtemp(join(tmpdir(), 'pi-bg-registry-'));
   const cwd = join(root, 'project');
   await mkdir(cwd, { recursive: true });
+  // 本 fork：runtime 目录按 <session-id>-<pid> 命名，不再随 cwd 天然隔离；
+  // 每个 harness 独占一个 runtime root，否则同进程同 sessionId 的任务会互相看见产物。
+  process.env[RUNTIME_DIR_ENV] = join(root, 'runtime');
   let pid = 4200;
   let idSeq = 0;
   const children: SpawnRecord[] = [];
@@ -285,6 +289,7 @@ function piJsonEvents(provider = 'openai-codex', model = 'gpt-5.5'): string {
 }
 
 async function cleanup(root: string) {
+  delete process.env[RUNTIME_DIR_ENV];
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       await rm(root, { recursive: true, force: true });
@@ -650,7 +655,7 @@ void describe('BackgroundTaskRegistry', () => {
       stopWaitMs: 80,
       killGraceMs: 20,
       spawn: (command, args, options) => {
-        rmSync(join(projectCwd, '.pi'), { recursive: true, force: true });
+        rmSync(join(projectCwd, '..', 'runtime'), { recursive: true, force: true });
         child = spawn(command, args, options);
         return child;
       },
@@ -3009,7 +3014,8 @@ setInterval(() => {}, 1000);
     const metadataFailure = await createHarness();
     try {
       const { task, child } = await startFakeTask(metadataFailure, 'Metadata Failure');
-      await rm(join(metadataFailure.cwd, '.pi'), { recursive: true, force: true });
+      // 本 fork：元数据写在 runtime root，删掉它才能制造写入失败
+      await rm(join(metadataFailure.root, 'runtime'), { recursive: true, force: true });
       child.close(0, null);
       await waitFor(() => task.status === 'failed', 'metadata failure task completion');
       await waitFor(

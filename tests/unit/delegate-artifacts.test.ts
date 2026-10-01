@@ -44,6 +44,8 @@ async function makeStore(taskId = TASK_ID) {
   roots.push(root);
   const store = await DelegateArtifactStore.create({
     cwd: root,
+    // 本 fork：产物移出 cwd，测试钉到临时 runtime root，避免写进真实 ~/.pi
+    runtimeRoot: root,
     taskId,
     launchNonce: NONCE,
     sessionId: 'unit-session',
@@ -78,6 +80,8 @@ void describe('delegate artifact store', () => {
     await assert.rejects(
       DelegateArtifactStore.create({
         cwd: root,
+        // 本 fork：产物移出 cwd，测试钉到临时 runtime root
+        runtimeRoot: root,
         taskId: TASK_ID,
         launchNonce: NONCE,
         sessionId: 'unit-session',

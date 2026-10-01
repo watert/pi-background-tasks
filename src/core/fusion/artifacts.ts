@@ -4,6 +4,7 @@ import { basename, isAbsolute, join, relative, sep } from 'node:path';
 import { canonicalJson, sha256Buffer } from '../canonical-json.js';
 import { sanitizePathSegment } from '../common.js';
 import { replaceFileDurable } from '../durable-fs.js';
+import { displayRuntimePath, resolveRuntimeRoot } from '../runtime-root.js';
 import {
   EMPTY_FUSION_USAGE,
   FUSION_COMMITTED_RESULT_SCHEMA_VERSION,
@@ -91,6 +92,8 @@ interface MutableFusionArtifactManifest {
 
 export interface CreateFusionArtifactStoreOptions {
   cwd: string;
+  /** 覆盖 runtime root（测试用；缺省走 PI_BG_RUNTIME_DIR / ~/.pi/bg-tasks） */
+  runtimeRoot?: string | undefined;
   sessionId?: string | undefined;
   runId?: string | undefined;
   profile?: FusionWorkflowProfile | undefined;
@@ -565,8 +568,10 @@ export class FusionArtifactStore {
       options.sessionId ?? `session-${String(process.pid)}`,
     );
     const sessionDirName = `${sessionSegment}-${String(process.pid)}`;
-    const runDirAbs = join(options.cwd, '.pi', 'fusion', sessionDirName, runId);
-    const runDirDisplay = join('.pi', 'fusion', sessionDirName, runId);
+    // 本 fork：fusion 产物落在 Pi home 下的 runtime root，不再写进项目 <cwd>/.pi
+    const runtimeRoot = options.runtimeRoot ?? resolveRuntimeRoot();
+    const runDirAbs = join(runtimeRoot, 'fusion', sessionDirName, runId);
+    const runDirDisplay = displayRuntimePath(runDirAbs);
     await mkdir(runDirAbs, { recursive: true, mode: 0o700 });
     await chmod(runDirAbs, 0o700);
     const timestamp = (options.now ?? (() => new Date()))().toISOString();

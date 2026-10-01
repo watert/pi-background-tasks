@@ -5,6 +5,7 @@ import { basename, isAbsolute, join, relative, sep } from 'node:path';
 import { canonicalJson } from '../canonical-json.js';
 import { sanitizePathSegment } from '../common.js';
 import { replaceFileDurable, writeFileDurable } from '../durable-fs.js';
+import { displayRuntimePath, resolveRuntimeRoot } from '../runtime-root.js';
 import { DELEGATE_MANIFEST_SCHEMA_VERSION, DELEGATE_RECEIPT_SCHEMA_VERSION, DelegateError, } from './types.js';
 import { DELEGATE_RESULT_PACKAGE_FILENAME, serializeDelegateResultPackage, } from './result-package.js';
 /**
@@ -86,9 +87,11 @@ export class DelegateArtifactStore {
     static async create(options) {
         const sessionSegment = sanitizePathSegment(options.sessionId ?? `session-${String(process.pid)}`);
         const runDirName = `${sessionSegment}-${String(process.pid)}`;
-        const parentAbs = join(options.cwd, '.pi', 'delegate', runDirName);
+        // 本 fork：delegate 产物落在 Pi home 下的 runtime root，不再写进项目 <cwd>/.pi
+        const runtimeRoot = options.runtimeRoot ?? resolveRuntimeRoot();
+        const parentAbs = join(runtimeRoot, 'delegate', runDirName);
         const rootAbs = join(parentAbs, options.taskId);
-        const rootDisplay = join('.pi', 'delegate', runDirName, options.taskId);
+        const rootDisplay = displayRuntimePath(rootAbs);
         try {
             await mkdir(parentAbs, { recursive: true, mode: 0o700 });
             await mkdir(rootAbs, { recursive: false, mode: 0o700 });

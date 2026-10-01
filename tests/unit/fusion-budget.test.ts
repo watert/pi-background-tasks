@@ -758,7 +758,7 @@ void describe('fusion stage budgets', () => {
       });
       assert.equal(result.mergedText, 'merged');
       assert.equal(calls.length, 5);
-      const planText = await readFile(join(root, result.details.artifact_dir, 'budget-plan.json'), 'utf8');
+      const planText = await readFile(join(result.details.artifact_dir, 'budget-plan.json'), 'utf8');
       const plan = parseJsonText(planText);
       assert.ok(typeof plan === 'object' && plan !== null);
       assert.equal(Reflect.get(plan, 'primary_blocker'), undefined);
@@ -796,7 +796,7 @@ void describe('fusion stage budgets', () => {
       );
       // The oversized response is preserved as evidence.
       const preserved = await readFile(
-        join(outcome.root, outcome.artifactDir, 'candidate-1.attempt-1.response.md'),
+        join(outcome.artifactDir, 'candidate-1.attempt-1.response.md'),
         'utf8',
       );
       assert.equal(preserved.length, oversized.length);
@@ -1092,7 +1092,7 @@ void describe('fusion stage budgets', () => {
       assert.equal(result.details.budget.calibration_warnings.length, 0);
 
       const planText = await readFile(
-        join(root, result.details.artifact_dir, 'budget-plan.json'),
+        join(result.details.artifact_dir, 'budget-plan.json'),
         'utf8',
       );
       const plan = parseJsonText(planText);
@@ -1111,7 +1111,7 @@ void describe('fusion stage budgets', () => {
       assert.equal(Array.isArray(Reflect.get(plan, 'warnings')), true);
 
       const ledgerText = await readFile(
-        join(root, result.details.artifact_dir, 'context-omission-ledger.json'),
+        join(result.details.artifact_dir, 'context-omission-ledger.json'),
         'utf8',
       );
       assert.match(ledgerText, /visible-conversation-ledger-v2/);
@@ -1214,7 +1214,7 @@ void describe('fusion stage budgets', () => {
       assert.equal(result.details.budget.calibration_warnings.length, 1);
       assert.equal(events.length, 1);
       const artifact = await readFile(
-        join(root, result.details.artifact_dir, 'candidate-1.attempt-1.calibration-violation.json'),
+        join(result.details.artifact_dir, 'candidate-1.attempt-1.calibration-violation.json'),
         'utf8',
       );
       const parsed = parseJsonText(artifact);
@@ -1282,7 +1282,7 @@ void describe('fusion stage budgets', () => {
     );
     try {
       const planText = await readFile(
-        join(outcome.root, outcome.artifactDir, 'budget-plan.json'),
+        join(outcome.artifactDir, 'budget-plan.json'),
         'utf8',
       );
       const plan = parseJsonText(planText);

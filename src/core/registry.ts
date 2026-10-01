@@ -3,6 +3,7 @@ import { randomBytes } from 'node:crypto';
 import { createWriteStream, existsSync } from 'node:fs';
 import { mkdir, realpath, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { displayRuntimePath, resolveRuntimeRoot } from './runtime-root.js';
 import type { Api, Model } from '@earendil-works/pi-ai';
 import type { ExtensionContext } from '@earendil-works/pi-coding-agent';
 import { formatSize } from '@earendil-works/pi-coding-agent';
@@ -1263,8 +1264,9 @@ export class BackgroundTaskRegistry {
     if (this.runtimeDir) return this.runtimeDir;
     const sessionId = sanitizePathSegment(ctx.sessionId ?? `session-${String(process.pid)}`);
     const runId = `${sessionId}-${String(process.pid)}`;
-    const runtimeDirAbs = join(ctx.cwd, '.pi', 'tasks', runId);
-    const runtimeDirDisplay = join('.pi', 'tasks', runId);
+    // 本 fork：后台 shell 任务产物落在 Pi home 下的 runtime root，不再写进项目 <cwd>/.pi
+    const runtimeDirAbs = join(resolveRuntimeRoot(), 'tasks', runId);
+    const runtimeDirDisplay = displayRuntimePath(runtimeDirAbs);
     await mkdir(runtimeDirAbs, { recursive: true });
     this.runtimeDir = { abs: runtimeDirAbs, display: runtimeDirDisplay };
     return this.runtimeDir;
